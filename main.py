@@ -1,10 +1,11 @@
 import pygame
 from population import Population
 import globals as g
+import cProfile
 
 
 def main():
-    mouse = g.targetpos
+    mouse = g.target.pos
     current_frame = 0
     population = Population()
     clock = pygame.time.Clock()
@@ -16,7 +17,7 @@ def main():
             if event.type == pygame.MOUSEMOTION:
                 mouse = pygame.Vector2(*pygame.mouse.get_pos())
             if event.type == pygame.MOUSEBUTTONDOWN:
-                g.targetpos = mouse
+                g.target.pos = mouse
             if event.type == pygame.QUIT:
                 running = False
             keys = pygame.key.get_pressed()
@@ -32,10 +33,10 @@ def main():
                 speed = 1
 
         population.update(current_frame)
-        
+
         if current_frame % speed == 0:
             g.screen.fill((0, 0, 0))
-            pygame.draw.circle(g.screen, (0, 255, 0), g.targetpos, g.targetrad)
+            pygame.draw.circle(g.screen, (0, 255, 0), g.target.pos, g.target.radius)
             pygame.draw.rect(g.screen, (255, 0, 0), g.obstacle1)
             pygame.draw.rect(g.screen, (255, 0, 0), g.obstacle2)
             population.draw()
@@ -47,4 +48,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    cProfile.run("main()", sort="time")
