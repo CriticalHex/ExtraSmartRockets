@@ -22,7 +22,7 @@ class Population:
     def reproduce(self):
         self.normalize_scores()
         for r in self.rockets:
-            r.net.mutate(r.hit_target)
+            #r.net.mutate(r.hit_target)
             select = 0
             selector = random.random()
             while selector > 0:
@@ -35,7 +35,7 @@ class Population:
             # mid = random.randrange(0, g.frames)
             # p1 = self.repro_pool[random.randrange(0, g.max_rockets)]
             # p2 = self.repro_pool[random.randrange(0, g.max_rockets)]
-            new_net = Net(7, 7, 2)
+            new_net = Net(7, 4, 7, 2)
             # new_net.genes.clear()
             # new_net.genes.extend(p1.net.genes[0:mid])
             # new_net.genes.extend(p2.net.genes[mid : g.frames])

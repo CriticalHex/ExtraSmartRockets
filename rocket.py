@@ -101,13 +101,15 @@ class Rocket:
         self.sdown = 0
         self.hup = 0
         self.hdown = 0
+        self.smallest = 0
+        self.largest = 0
 
         self.heading = heading(self.vel)
 
         self.initial_dist = dist(self.pos, g.target.pos)
 
         if not net:
-            self.net = Net(7, 7, 2)
+            self.net = Net(7, 4, 7, 2)
             # inputs:
             # x, y, 3 looking vars,
             # thrust (might be 3 later)
@@ -131,12 +133,25 @@ class Rocket:
     def count(self):
         if self.net.output_values[0] >= 0:
             self.hup += 1
+            # self.heading += radians(1)
         if self.net.output_values[0] < 0:
             self.hdown += 1
+            # self.heading -= radians(1)
         if self.net.output_values[1] >= 0:
             self.sup += 1
+            # self.thrust += 1
         if self.net.output_values[1] < 0:
             self.sdown += 1
+            # self.thrust -= 1
+        # if self.net.output_values[0] < self.smallest:
+        #     self.smallest = self.net.output_values[0]
+        # elif self.net.output_values[1] < self.smallest:
+        #     self.smallest = self.net.output_values[1]
+        # if self.net.output_values[0] > self.largest:
+        #     self.largest = self.net.output_values[0]
+        # elif self.net.output_values[1] > self.largest:
+        #     self.largest = self.net.output_values[1]
+        
 
     def update(self, frame: int):
         if self.flying and not self.hit_target:
