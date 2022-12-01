@@ -11,28 +11,7 @@ class Circle:
         self.radius = radius
 
     def collidepoint(self, point: v2):
-        return (point.x - self.pos.x) ** 2 + (
-            point.y - self.pos.y
-        ) ** 2 < self.radius**2
-
-
-def heading(v: pygame.Vector2):
-    """if v.x > 0:
-        if v.y > 0:
-            return math.atan(v.y / v.x)
-        if v.y < 0:
-            return -math.atan(abs(v.y / v.x))
-        return 0
-    if v.x < 0:
-        if v.y > 0:
-            return math.pi - math.atan(abs(v.y / v.x))
-        if v.y < 0:
-            return math.atan(abs(v.y / v.x)) - math.pi
-        return math.pi
-    return math.pi / 2"""
-    if v == v2(0, 0):
-        return math.pi / 2
-    return math.atan2(v.y, v.x)
+        return math.dist(self.pos, point) <= self.radius
 
 
 screen = pygame.display.set_mode((1000, 1000))
