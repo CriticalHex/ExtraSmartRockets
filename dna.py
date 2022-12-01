@@ -5,8 +5,8 @@ import globals as g
 
 def ra():
     vec = v2(random.randint(-1, 1), random.randint(-1, 1))
-    if (x := vec.magnitude()) > g.max_force:
-        return vec * (g.max_force / x)
+    if (x := vec.magnitude()) > g.max_speed:
+        return vec * (g.max_speed / x)
     return vec
 
 

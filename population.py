@@ -2,6 +2,12 @@ import globals as g
 from rocket import Rocket
 import random
 from neural import Network as Net
+import pygame
+
+
+def draw_text(text: str, pos: tuple[int, int]):
+    font = g.font.render(text, True, (0, 0, 255))
+    g.screen.blit(font, (pos[0] - font.get_width(), pos[1]))
 
 
 class Population:
@@ -52,6 +58,11 @@ class Population:
     def draw(self):
         g.screen.blit(self.font, (0, 0))
         for r in self.rockets:
+            draw_text(f"sup: {r.sup}", (100, g.height - 40))
+            draw_text(f"sdown: {r.sdown}", (300, g.height - 40))
+            draw_text(f"hup: {r.hup}", (500, g.height - 40))
+            draw_text(f"hdown: {r.hdown}", (700, g.height - 40))
+            draw_text(f"Speed: {r.speed}", (g.width, 0))
             r.draw()
 
     def normalize_scores(self):

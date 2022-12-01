@@ -4,12 +4,17 @@ import globals as g
 import cProfile
 
 
+def draw_text(text: str, pos: pygame.Vector2):
+    font = g.font.render(text, True, (0, 0, 255))
+    g.screen.blit(font, pos)
+
+
 def main():
     mouse = g.target.pos
     current_frame = 0
     population = Population()
     clock = pygame.time.Clock()
-    speed = 100
+    speed = 1
     running = True
     while running:
         for event in pygame.event.get():

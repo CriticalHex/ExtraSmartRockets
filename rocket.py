@@ -93,8 +93,14 @@ class Rocket:
         self.hit_target = False
 
         self.pos = v2(g.center.x, g.height - 100)
-        self.vel = v2(0, -1)
+        self.vel = v2(g.rand(-1, 1), g.rand(-1, 1))
         self.thrust = 0
+        self.speed = 0
+
+        self.sup = 0
+        self.sdown = 0
+        self.hup = 0
+        self.hdown = 0
 
         self.heading = heading(self.vel)
 
@@ -122,33 +128,41 @@ class Rocket:
         pygame.draw.rect(self.image, (255, 255, 255), self.irect)
         self.rect = self.image.get_rect(center=(self.pos))
 
-    def compile_inputs(self):
-        # x, y, 3 looking vars, thrust, heading
-        return [
-            self.pos.x,
-            self.pos.y,
-            self.looking0,
-            self.looking1,
-            self.looking2,
-            self.thrust,
-            self.heading,
-        ]
+    def count(self):
+        if self.net.output_values[0] >= 0:
+            self.hup += 1
+        if self.net.output_values[0] < 0:
+            self.hdown += 1
+        if self.net.output_values[1] >= 0:
+            self.sup += 1
+        if self.net.output_values[1] < 0:
+            self.sdown += 1
 
     def update(self, frame: int):
         if self.flying and not self.hit_target:
-            self.heading = heading(self.vel)
             self.look()
             self.collision(frame)
-            self.net.compute(self.compile_inputs())
+            self.net.compute(
+                [
+                    self.pos.x,
+                    self.pos.y,
+                    self.looking0,
+                    self.looking1,
+                    self.looking2,
+                    self.thrust,
+                    self.heading,
+                ]
+            )
             # output_values = [heading, thrust]
+            self.count()
             self.heading += radians(self.net.output_values[0])
             self.thrust += self.net.output_values[1]
             self.thrust = limit(self.thrust, 0, 100)
-            self.vel = setMag(self.vel, self.thrust)
+            self.speed = g.max_speed * (self.thrust / 100)
             self.move()
 
     def move(self):
-        self.pos += self.vel
+        self.pos = vectorize(self.pos, self.heading, self.speed)
         self.rect.center = self.pos
 
     def draw(self):
@@ -173,7 +187,8 @@ class Rocket:
                 or self.pos.x <= 0
                 or self.pos.x >= g.width
             )
-            or (self.rect.colliderect(g.obstacle1))
+            # or (self.rect.colliderect(g.obstacle1))
+            or (g.obstacle1.collidepoint(self.pos))
             # or (self.rect.colliderect(g.obstacle2))
             or self.hit_target
         ):

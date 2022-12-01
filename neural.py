@@ -6,8 +6,17 @@ def rand(start: int, end: int, *, digits: int = 10):
     s = randint(start * d, end * d)
     return s / d
 
+
+# def activate(guess: float):
+#     return 1 if guess >= 0 else -1
+
+
 def activate(guess: float):
-    return 1 if guess >= 0 else -1
+    if guess >= 0:
+        return 1
+    if guess < 0:
+        return -1
+    print("WHAT")
 
 
 class Network:
@@ -36,7 +45,8 @@ class Network:
         self.output_values = []
         for o in self.output_nodes:
             o.process(self.hidden_values)
-            self.output_values.append(activate(o.val))
+            self.output_values.append(o.val)
+        print(len(self.output_values))
 
     def mutate(self, chance=0.1):
         for n in self.hidden_nodes:
