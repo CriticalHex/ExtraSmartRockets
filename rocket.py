@@ -3,7 +3,7 @@ import pygame
 from pygame import Vector2 as v2
 import globals as g
 from dna import DNA
-from numpy import interp, arange
+from numpy import arange
 
 
 def vectorize(point: v2, angle: float, distance: float):
@@ -28,24 +28,24 @@ def trace(start: v2, angle: float, resolution: float):
     return 0, line
 
 
-# def trace(start: v2, direction: v2, resolution: float):
-#     line: list[v2] = []
-#     if direction != v2(0, 0):
-#         direction.normalize_ip()
-#     end = start + (direction * 1000)
-#     for i in arange(0, 1, resolution):
-#         p = point(start, end, i)
-#         line.append(p)
-#         if p.y <= 0 or p.y >= g.height or p.x <= 0 or p.x >= g.width:
-#             return 0, line
-#         for o in g.objects:
-#             if o.collidepoint(p):
-#                 t = type(o)
-#                 if t == g.Circle:
-#                     return 1, line
-#                 if t == pygame.Rect:
-#                     return -1, line
-#     return 0, line
+"""def trace(start: v2, direction: v2, resolution: float):
+    line: list[v2] = []
+    if direction != v2(0, 0):
+        direction.normalize_ip()
+    end = start + (direction * 1000)
+    for i in arange(0, 1, resolution):
+        p = point(start, end, i)
+        line.append(p)
+        if p.y <= 0 or p.y >= g.height or p.x <= 0 or p.x >= g.width:
+            return 0, line
+        for o in g.objects:
+            if o.collidepoint(p):
+                t = type(o)
+                if t == g.Circle:
+                    return 1, line
+                if t == pygame.Rect:
+                    return -1, line
+    return 0, line"""
 
 
 def point(p1: v2, p2: v2, t: float):
@@ -62,7 +62,6 @@ class Rocket:
         self.acc = v2(0, 0)
 
         self.initial_dist = dist(self.pos, g.target.pos)
-        # print(self.initial_dist)
 
         if not dna:
             self.dna = DNA()
@@ -119,7 +118,7 @@ class Rocket:
                 or self.pos.x >= g.width
             )
             or (self.rect.colliderect(g.obstacle1))
-            or (self.rect.colliderect(g.obstacle2))
+            # or (self.rect.colliderect(g.obstacle2))
             or self.hit_target
         ):
             self.stop()
@@ -134,42 +133,52 @@ class Rocket:
             self.score /= 2
 
     def look(self):
-        self.looking1, self.line1 = trace(self.pos, g.heading(self.vel), 0.01)
+        res = 0.02
+        self.looking1, self.line1 = trace(self.pos, g.heading(self.vel), res)
         self.looking2, self.line2 = trace(
-            self.pos, g.heading(self.vel) - radians(45), 0.01
+            self.pos, g.heading(self.vel) - radians(15), res
         )
         self.looking0, self.line0 = trace(
-            self.pos, g.heading(self.vel) + radians(45), 0.01
+            self.pos, g.heading(self.vel) + radians(15), res
         )
 
-        # self.looking1, self.line1 = trace(self.pos, self.vel, 0.01)
-        # self.looking2, self.line2 = trace(
-        #     self.pos,
-        #     v2(
-        #         self.vel.x * 0.7071 - self.vel.y * -0.7071,
-        #         self.vel.x * -0.7071 + self.vel.y * 0.7071,
-        #     ),
-        #     0.01,
-        # )
-        # self.looking0, self.line0 = trace(
-        #     self.pos,
-        #     v2(
-        #         self.vel.x * 0.7071 - self.vel.y * 0.7071,
-        #         self.vel.x * 0.7071 + self.vel.y * 0.7071,
-        #     ),
-        #     0.01,
-        # )
+        """self.looking1, self.line1 = trace(self.pos, self.vel, 0.01)
+        self.looking2, self.line2 = trace(
+            self.pos,
+            v2(
+                self.vel.x * 0.7071 - self.vel.y * -0.7071,
+                self.vel.x * -0.7071 + self.vel.y * 0.7071,
+            ),
+            0.01,
+        )
+        self.looking0, self.line0 = trace(
+            self.pos,
+            v2(
+                self.vel.x * 0.7071 - self.vel.y * 0.7071,
+                self.vel.x * 0.7071 + self.vel.y * 0.7071,
+            ),
+            0.01,
+        )"""
 
     def draw_rays(self):
         if len(self.line1) >= 2:
-            pygame.draw.lines(
-                pygame.display.get_surface(), (0, 255, 0), False, self.line1
-            )
+            if self.looking1 == 0:
+                pygame.draw.lines(g.screen, pygame.Color(0, 0, 255), False, self.line1)
+            elif self.looking1 == -1:
+                pygame.draw.lines(g.screen, pygame.Color(255, 0, 0), False, self.line1)
+            elif self.looking1 == 1:
+                pygame.draw.lines(g.screen, pygame.Color(0, 255, 0), False, self.line1)
         if len(self.line2) >= 2:
-            pygame.draw.lines(
-                pygame.display.get_surface(), (0, 255, 0), False, self.line2
-            )
+            if self.looking2 == 0:
+                pygame.draw.lines(g.screen, pygame.Color(0, 0, 255), False, self.line2)
+            elif self.looking2 == -1:
+                pygame.draw.lines(g.screen, pygame.Color(255, 0, 0), False, self.line2)
+            elif self.looking2 == 1:
+                pygame.draw.lines(g.screen, pygame.Color(0, 255, 0), False, self.line2)
         if len(self.line0) >= 2:
-            pygame.draw.lines(
-                pygame.display.get_surface(), (0, 255, 0), False, self.line0
-            )
+            if self.looking0 == 0:
+                pygame.draw.lines(g.screen, pygame.Color(0, 0, 255), False, self.line0)
+            elif self.looking0 == -1:
+                pygame.draw.lines(g.screen, pygame.Color(255, 0, 0), False, self.line0)
+            elif self.looking0 == 1:
+                pygame.draw.lines(g.screen, pygame.Color(0, 255, 0), False, self.line0)

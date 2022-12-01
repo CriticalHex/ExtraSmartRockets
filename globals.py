@@ -11,23 +11,25 @@ class Circle:
         self.radius = radius
 
     def collidepoint(self, point: v2):
-        return (point.x - self.pos.x) ** 2 + (point.y - self.pos.y) ** 2 < self.radius
+        return (point.x - self.pos.x) ** 2 + (
+            point.y - self.pos.y
+        ) ** 2 < self.radius**2
 
 
 def heading(v: pygame.Vector2):
-    # if v.x > 0:
-    #     if v.y > 0:
-    #         return math.atan(v.y / v.x)
-    #     if v.y < 0:
-    #         return -math.atan(abs(v.y / v.x))
-    #     return 0
-    # if v.x < 0:
-    #     if v.y > 0:
-    #         return math.pi - math.atan(abs(v.y / v.x))
-    #     if v.y < 0:
-    #         return math.atan(abs(v.y / v.x)) - math.pi
-    #     return math.pi
-    # return math.pi / 2
+    """if v.x > 0:
+        if v.y > 0:
+            return math.atan(v.y / v.x)
+        if v.y < 0:
+            return -math.atan(abs(v.y / v.x))
+        return 0
+    if v.x < 0:
+        if v.y > 0:
+            return math.pi - math.atan(abs(v.y / v.x))
+        if v.y < 0:
+            return math.atan(abs(v.y / v.x)) - math.pi
+        return math.pi
+    return math.pi / 2"""
     if v == v2(0, 0):
         return math.pi / 2
     return math.atan2(v.y, v.x)
@@ -39,7 +41,7 @@ height = screen.get_height()
 width = screen.get_width()
 center = pygame.Vector2(width / 2, height / 2)
 frames = 200
-max_rockets = 250
+max_rockets = 50
 max_force = 0.04
 
 font = pygame.font.SysFont(None, 48)
@@ -50,4 +52,5 @@ obstacle1 = pygame.Rect(50, 300, 500, 20)
 obstacle2 = pygame.Rect(450, 700, 500, 20)
 
 objects = []
-objects.extend([target, obstacle1, obstacle2])
+# objects.extend([target, obstacle1, obstacle2])
+objects.extend([target, obstacle1])
