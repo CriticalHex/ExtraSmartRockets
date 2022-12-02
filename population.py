@@ -1,13 +1,8 @@
-import globals as g
-from rocket import Rocket
-import random
-from neural import Network as Net
-import pygame
-
-
-def draw_text(text: str, pos: tuple[int, int]):
-    font = g.font.render(text, True, (0, 0, 255))
-    g.screen.blit(font, (pos[0] - font.get_width(), pos[1]))
+import globals as g  # globals
+from rocket import Rocket  # rocket class
+import random  # random number generation
+from neural import Network as Net  # AI Class
+import pygame  # game libary if necessary
 
 
 class Population:
@@ -22,7 +17,7 @@ class Population:
     def reproduce(self):
         self.normalize_scores()
         for r in self.rockets:
-            #r.net.mutate(r.hit_target)
+            # r.net.mutate(r.hit_target)
             select = 0
             selector = random.random()
             while selector > 0:
@@ -35,7 +30,7 @@ class Population:
             # mid = random.randrange(0, g.frames)
             # p1 = self.repro_pool[random.randrange(0, g.max_rockets)]
             # p2 = self.repro_pool[random.randrange(0, g.max_rockets)]
-            new_net = Net(7, 4, 7, 2)
+            new_net = Net(*g.net_settings)
             # new_net.genes.clear()
             # new_net.genes.extend(p1.net.genes[0:mid])
             # new_net.genes.extend(p2.net.genes[mid : g.frames])
@@ -58,11 +53,11 @@ class Population:
     def draw(self):
         g.screen.blit(self.font, (0, 0))
         for r in self.rockets:
-            draw_text(f"sup: {r.sup}", (100, g.height - 40))
-            draw_text(f"sdown: {r.sdown}", (300, g.height - 40))
-            draw_text(f"hup: {r.hup}", (500, g.height - 40))
-            draw_text(f"hdown: {r.hdown}", (700, g.height - 40))
-            draw_text(f"Speed: {r.speed}", (g.width, 0))
+            # draw_text(f"sup: {r.sup}", (100, g.height - 40))
+            # draw_text(f"sdown: {r.sdown}", (300, g.height - 40))
+            # draw_text(f"hup: {r.hup}", (500, g.height - 40))
+            # draw_text(f"hdown: {r.hdown}", (700, g.height - 40))
+            # draw_text(f"Speed: {r.speed}", (g.width, 0))
             r.draw()
 
     def normalize_scores(self):
