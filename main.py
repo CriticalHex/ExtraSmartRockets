@@ -41,13 +41,14 @@ def main():
             pygame.draw.circle(
                 g.screen, (0, 255, 0), g.target.pos, g.target.radius
             )  # draw the target
-            pygame.draw.rect(g.screen, (255, 0, 0), g.obstacle1)  # draw obstacles
+            # pygame.draw.rect(g.screen, (255, 0, 0), g.obstacle1)  # draw obstacles
             # pygame.draw.rect(g.screen, (255, 0, 0), g.obstacle2) # ^^^
             population.draw()  # draw all the rockets and debug info
             pygame.display.flip()  # update screen
 
         current_frame += 1  # count frames elapsed
         current_frame %= g.frames  # reset to zero when the count hits a max
+        population.purge(current_frame)
     pygame.quit()  # close the window
 
 

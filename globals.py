@@ -41,9 +41,9 @@ pygame.display.set_caption("Smart Rockets")  # caption the screen
 height = screen.get_height()  # global height value
 width = screen.get_width()  # global width value
 center = pygame.Vector2(width / 2, height / 2)  # global center value
-frames = 200  # frames to run each generation for
-max_rockets = 50  # rockets per generation
-max_speed = 4  # max rocket speed
+frames = 400  # frames to run each generation for
+max_rockets = 250  # rockets per generation
+max_speed = 10  # max rocket speed
 
 net_settings = [
     7,
@@ -61,4 +61,4 @@ obstacle2 = pygame.Rect(450, 700, 500, 20)
 
 objects: list[pygame.Rect | Circle] = []
 # objects.extend([target, obstacle1, obstacle2])
-objects.extend([target, obstacle1])  # create a list of things to collide with.
+objects.extend([target])  # create a list of things to collide with.

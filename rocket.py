@@ -125,13 +125,8 @@ class Rocket:  # the rocket
 
         if not net:  # if not given a network, create a random one
             self.net = Net(*g.net_settings)  # using the global network settings
-            # inputs:
-            # x, y, 3 looking vars,
-            # thrust (might be 3 later)
-            # heading
-            # arbitrary 7 hidden
-            # outputs:
-            # heading, thrust
+            # inputs: x, y, look0, look1, look2, thrust, heading
+            # outputs: heading, thrust
         else:
             self.net = net
 
