@@ -244,7 +244,7 @@ class Rocket:  # the rocket
         # a better score if the target was hit faster, but I'm bad at scoring
         if self.hit_target:  # if hit the target
             self.score *= 20  # super high score
-        else:  # hit the wall or obstacle
+        else:  # hit the wall or obstacle or nothing
             self.score /= 2  # lower score
 
     def look(self):
