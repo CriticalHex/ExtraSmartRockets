@@ -45,7 +45,7 @@ frames = 400  # frames to run each generation for
 max_rockets = 10  # rockets per generation
 max_speed = 10  # max rocket speed
 
-net_settings = [5, 4, 5, 2]
+net_settings = [8, 4, 2]
 # the inputs, hidden layers, nodes per hidden layer, and outputs of the AI
 
 font = pygame.font.SysFont(None, 48)  # a font to use across all files

@@ -1,23 +1,18 @@
 """Rockets"""
 
-from math import (
-    dist,
-    sin,
-    cos,
-    radians,
-    atan2,
-    pi,
-)  # all the math things used in this file
+import math  # all the math things used in this file
 import pygame  # game library
 from pygame import Vector2 as v2  # rename "pygame.Vector2" to v2
 import globals as g  # things that files need access to
-from neural import Network as Net  # the AI framework
+from neural import NeuralNetwork as Net  # the AI framework
 from numpy import arange  # range but with floats
 
 
 def vectorize(point: v2, angle: float, distance: float):
     """Return a point a provided angle and distance away from provided point"""
-    return v2(distance * cos(angle) + point.x, distance * sin(angle) + point.y)
+    return v2(
+        distance * math.cos(angle) + point.x, distance * math.sin(angle) + point.y
+    )
 
 
 def trace(start: v2, angle: float, resolution: float):
@@ -47,26 +42,6 @@ def trace(start: v2, angle: float, resolution: float):
     return 0, line  # otherwise return the wall value and the line
 
 
-"""def trace(start: v2, direction: v2, resolution: float):
-    line: list[v2] = []
-    if direction != v2(0, 0):
-        direction.normalize_ip()
-    end = start + (direction * 1000)
-    for i in arange(0, 1, resolution):
-        p = point(start, end, i)
-        line.append(p)
-        if p.y <= 0 or p.y >= g.height or p.x <= 0 or p.x >= g.width:
-            return 0, line
-        for o in g.objects:
-            if o.collidepoint(p):
-                t = type(o)
-                if t == g.Circle:
-                    return 1, line
-                if t == pygame.Rect:
-                    return -1, line
-    return 0, line"""
-
-
 def point(p1: v2, p2: v2, t: float):
     """return a point a percentage of the way between two points"""
     return v2(p1.x + (p2.x - p1.x) * t, p1.y + (p2.y - p1.y) * t)
@@ -94,8 +69,8 @@ def setMag(v: v2, mag):
 def heading(v: pygame.Vector2):
     """Return the angle a vector is facing"""
     if v == v2(0, 0):
-        return pi / 2
-    return atan2(v.y, v.x)
+        return math.pi / 2
+    return math.atan2(v.y, v.x)
 
 
 class Rocket:  # the rocket
@@ -118,14 +93,14 @@ class Rocket:  # the rocket
             v2(g.rand(-1, 1), g.rand(-1, 1))
         )  # direction the rocket is facing to start with
 
-        self.initial_dist = dist(
+        self.initial_dist = math.dist(
             self.pos, g.target.pos
         )  # how far the rocket is from the target.
         # Currently unused, was meant for the scoring function
 
         if not net:  # if not given a network, create a random one
             self.net = Net(*g.net_settings)  # using the global network settings
-            # inputs: x, y, look0, look1, look2, thrust, heading
+            # inputs: bias(1), x, y, look0, look1, look2, thrust, heading
             # outputs: heading, thrust
         else:
             self.net = net
@@ -157,14 +132,23 @@ class Rocket:  # the rocket
                 frame
             )  # checks collision, passes frame because if the target was hit,
             # the frame it was hit is recorded in self.hit_at
-            self.net.compute(
-                [self.looking0, self.looking1, self.looking2, self.thrust, self.heading]
+            self.net.forward_propagation(
+                [
+                    1,
+                    self.pos.x,
+                    self.pos.y,
+                    self.looking0,
+                    self.looking1,
+                    self.looking2,
+                    self.thrust,
+                    self.heading,
+                ]
             )
             # run the AI to get instructions, output_values = [heading, thrust]
-            self.heading += radians(
-                self.net.output_values[0]
+            self.heading += math.radians(
+                self.net.final_outputs[0]
             )  # change heading based on AI output
-            self.thrust += self.net.output_values[1]  # change thrust based on AI output
+            self.thrust += self.net.final_outputs[1]  # change thrust based on AI output
             self.thrust = limit(self.thrust, 0, 100)  # limit thrust
             self.speed = g.max_speed * (self.thrust / 100)  # set speed
             self.move()  # move the rocket
@@ -194,7 +178,9 @@ class Rocket:  # the rocket
 
     def collision(self, frame: int):
         """Determines if the rocket is hitting anything"""
-        self.target_distance = dist(self.pos, g.target.pos)  # distance from the target
+        self.target_distance = math.dist(
+            self.pos, g.target.pos
+        )  # distance from the target
         if (
             self.target_distance <= g.target.radius
         ):  # if the distance to the target is less than the targets radius,
@@ -216,14 +202,16 @@ class Rocket:  # the rocket
 
     def eval(self):
         """Determines the rockets score at end of life"""
-        self.score *= self.initial_dist / self.target_distance
+        self.score = self.initial_dist / self.target_distance
+        if self.hit_target:
+            self.score *= 20
         # invert distance to target to mean being closer is better
-        if self.looking0 == 1:
-            self.score += 1
-        if self.looking1 == 1:
-            self.score += 1
-        if self.looking2 == 1:
-            self.score += 1
+        # if self.looking0 == 1:
+        #     self.score += 1
+        # if self.looking1 == 1:
+        #     self.score += 1
+        # if self.looking2 == 1:
+        #     self.score += 1
 
     def look(self):
         """Calcuate rays and what they're hitting"""
@@ -232,29 +220,11 @@ class Rocket:  # the rocket
             self.pos, self.heading, res
         )  # in front of the rocket
         self.looking2, self.line2 = trace(
-            self.pos, self.heading - radians(15), res
+            self.pos, self.heading - math.radians(15), res
         )  # 15 degrees right
         self.looking0, self.line0 = trace(
-            self.pos, self.heading + radians(15), res
+            self.pos, self.heading + math.radians(15), res
         )  # 15 degrees left of center
-
-        """self.looking1, self.line1 = trace(self.pos, self.vel, 0.01)
-        self.looking2, self.line2 = trace(
-            self.pos,
-            v2(
-                self.vel.x * 0.7071 - self.vel.y * -0.7071,
-                self.vel.x * -0.7071 + self.vel.y * 0.7071,
-            ),
-            0.01,
-        )
-        self.looking0, self.line0 = trace(
-            self.pos,
-            v2(
-                self.vel.x * 0.7071 - self.vel.y * 0.7071,
-                self.vel.x * 0.7071 + self.vel.y * 0.7071,
-            ),
-            0.01,
-        )"""
 
     def draw_rays(self):
         """Draws rays, colored based on what the ray is seeing."""
