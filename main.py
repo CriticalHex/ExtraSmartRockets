@@ -48,7 +48,7 @@ def main():
 
         current_frame += 1  # count frames elapsed
         current_frame %= g.frames  # reset to zero when the count hits a max
-        population.purge(current_frame)
+        # population.purge(current_frame)
     pygame.quit()  # close the window
 
 

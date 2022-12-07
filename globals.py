@@ -42,15 +42,11 @@ height = screen.get_height()  # global height value
 width = screen.get_width()  # global width value
 center = pygame.Vector2(width / 2, height / 2)  # global center value
 frames = 400  # frames to run each generation for
-max_rockets = 250  # rockets per generation
+max_rockets = 10  # rockets per generation
 max_speed = 10  # max rocket speed
 
-net_settings = [
-    7,
-    1,
-    4,
-    2,
-]  # the inputs, hidden layers, nodes per hidden layer, and outputs of the AI
+net_settings = [5, 4, 5, 2]
+# the inputs, hidden layers, nodes per hidden layer, and outputs of the AI
 
 font = pygame.font.SysFont(None, 48)  # a font to use across all files
 

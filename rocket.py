@@ -149,21 +149,6 @@ class Rocket:  # the rocket
         )  # set rocket rect to the image rect,
         # and center the image rect on the player position
 
-    def count(self):
-        """For debugging the AI instructions"""
-        if self.net.output_values[0] >= 0:
-            self.hup += 1
-            # self.heading += radians(1)
-        if self.net.output_values[0] < 0:
-            self.hdown += 1
-            # self.heading -= radians(1)
-        if self.net.output_values[1] >= 0:
-            self.sup += 1
-            # self.thrust += 1
-        if self.net.output_values[1] < 0:
-            self.sdown += 1
-            # self.thrust -= 1
-
     def update(self, frame: int):
         """Determine rocket behaviour"""
         if self.flying and not self.hit_target:  # if flying and didn't hit the target
@@ -173,17 +158,9 @@ class Rocket:  # the rocket
             )  # checks collision, passes frame because if the target was hit,
             # the frame it was hit is recorded in self.hit_at
             self.net.compute(
-                [
-                    self.pos.x,
-                    self.pos.y,
-                    self.looking0,
-                    self.looking1,
-                    self.looking2,
-                    self.thrust,
-                    self.heading,
-                ]
-            )  # run the AI to get instructions, output_values = [heading, thrust]
-            self.count()  # for debugging AI
+                [self.looking0, self.looking1, self.looking2, self.thrust, self.heading]
+            )
+            # run the AI to get instructions, output_values = [heading, thrust]
             self.heading += radians(
                 self.net.output_values[0]
             )  # change heading based on AI output
@@ -191,6 +168,7 @@ class Rocket:  # the rocket
             self.thrust = limit(self.thrust, 0, 100)  # limit thrust
             self.speed = g.max_speed * (self.thrust / 100)  # set speed
             self.move()  # move the rocket
+            self.eval()
 
     def move(self):
         """Move the rocket"""
@@ -207,6 +185,7 @@ class Rocket:  # the rocket
         g.screen.blit(image, self.rect)  # draw the image on the screen
         if self.flying and not self.hit_target:  # if flying
             self.draw_rays()  # draw the rays
+        # g.draw_text(str(self.score),(0,g.height - 50))
 
     def stop(self):
         """What to do when the rocket stops"""
@@ -237,15 +216,14 @@ class Rocket:  # the rocket
 
     def eval(self):
         """Determines the rockets score at end of life"""
-        self.score = (
-            self.initial_dist / self.target_distance
-        )  # invert distance to target to mean being closer is better
-        # self.score *= g.frames / self.hit_at # this would be
-        # a better score if the target was hit faster, but I'm bad at scoring
-        if self.hit_target:  # if hit the target
-            self.score *= 20  # super high score
-        else:  # hit the wall or obstacle or nothing
-            self.score /= 2  # lower score
+        self.score *= self.initial_dist / self.target_distance
+        # invert distance to target to mean being closer is better
+        if self.looking0 == 1:
+            self.score += 1
+        if self.looking1 == 1:
+            self.score += 1
+        if self.looking2 == 1:
+            self.score += 1
 
     def look(self):
         """Calcuate rays and what they're hitting"""
