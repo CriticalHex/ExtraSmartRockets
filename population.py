@@ -2,6 +2,7 @@ from neural import NeuralNetwork
 import numpy as np
 import globals as g
 from rocket import Rocket
+from pygame.math import Vector2 as v2
 import random
 
 
@@ -75,6 +76,7 @@ class Population:
 
     def update(self, frame: int):
         if frame == g.frames - 1:
+            g.target.pos = v2(random.randint(100, 900), random.randint(100, 800))
             self.generations += 1
             self.gen_text = g.font.render(
                 f"Generations: {self.generations}", True, (0, 0, 255)

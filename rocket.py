@@ -134,23 +134,18 @@ class Rocket:  # the rocket
                 frame
             )  # checks collision, passes frame because if the target was hit,
             # the frame it was hit is recorded in self.hit_at
-            self.net.forward_propagation(
-                [
-                    1,
-                    self.pos.x,
-                    self.pos.y,
-                    self.looking0,
-                    self.looking1,
-                    self.looking2,
-                    self.thrust,
-                    self.heading,
-                ]
-            )
+            self.net.forward_propagation(self.normalize_inputs())
             # run the AI to get instructions, output_values = [heading, thrust]
             self.heading += math.radians(
                 self.net.final_outputs[0]
             )  # change heading based on AI output
-            self.thrust += self.net.final_outputs[1]  # change thrust based on AI output
+            if self.heading >= 2 * math.pi:
+                self.heading -= 2 * math.pi
+            elif self.heading <= -2 * math.pi:
+                self.heading += 2 * math.pi
+            self.thrust += float(
+                self.net.final_outputs[1]
+            )  # change thrust based on AI output
             self.thrust = limit(self.thrust, 0, 100)  # limit thrust
             self.speed = g.max_speed * (self.thrust / 100)  # set speed
             self.move()  # move the rocket
@@ -253,3 +248,15 @@ class Rocket:  # the rocket
             elif self.looking0 == 1:
                 color = (0, 255, 0)
             pygame.draw.lines(g.screen, color, False, self.line0)
+
+    def normalize_inputs(self):
+        return [
+            1,
+            self.pos.x / g.width,
+            self.pos.y / g.height,
+            self.looking0,
+            self.looking1,
+            self.looking2,
+            self.thrust / 100,
+            self.heading / (2 * math.pi),
+        ]
