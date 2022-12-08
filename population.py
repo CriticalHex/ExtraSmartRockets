@@ -9,6 +9,7 @@ class Population:
     def __init__(self):
         self.mutation_rate = 0.1
         self.hit = 0  # how many rockets hit the target
+        self.most_hit = self.hit
         self.generations = 0  # which iteration is this generation on
         self.gen_text = g.font.render(
             f"Generations: {self.generations}", True, (0, 0, 255)
@@ -16,6 +17,9 @@ class Population:
         self.hit_text = g.font.render(
             f"Hit last generation: {self.hit}", True, (0, 0, 255)
         )  # text to display the amount of rockets that hit the target
+        self.most_hit_text = g.font.render(
+            f"Most hit: {self.most_hit}", True, (255, 0, 0)
+        )
         self.rockets: list[Rocket] = []  # the populations current rockets
         for _ in range(g.max_rockets):
             self.rockets.append(Rocket())  # create the rockets
@@ -33,6 +37,8 @@ class Population:
 
     def reproduce(self):
         """Creates the next generation of rockets."""
+        for r in self.rockets:
+            r.eval()
         self.normalize_scores()
         parents = self.select_parents()
         new_rockets = []
@@ -81,6 +87,13 @@ class Population:
             self.hit_text = g.font.render(
                 f"Hit last generation: {self.hit}", True, (0, 0, 255)
             )
+            if self.hit > self.most_hit:
+                self.most_hit = self.hit
+            red = np.interp(self.most_hit, [g.max_rockets / 2, g.max_rockets], [255, 0])
+            green = np.interp(self.most_hit, [0, g.max_rockets / 2], [0, 255])
+            self.most_hit_text = g.font.render(
+                f"Most hit: {self.most_hit}", True, (red, green, 0)
+            )
             self.reproduce()
         for r in self.rockets:
             r.update(frame)
@@ -88,5 +101,6 @@ class Population:
     def draw(self):
         g.screen.blit(self.gen_text, (0, 0))
         g.screen.blit(self.hit_text, (0, self.gen_text.get_height() - 1))
+        g.screen.blit(self.most_hit_text, (0, self.hit_text.get_height() * 2 - 1))
         for r in self.rockets:
             r.draw()

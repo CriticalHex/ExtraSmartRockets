@@ -89,9 +89,11 @@ class Rocket:  # the rocket
         self.hup = 0
         self.hdown = 0
 
-        self.heading = heading(
-            v2(g.rand(-1, 1), g.rand(-1, 1))
-        )  # direction the rocket is facing to start with
+        # self.heading = heading(
+        #     v2(g.rand(-1, 1), g.rand(-1, 1))
+        # )  # direction the rocket is facing to start with
+
+        self.heading = heading(v2(0, 0))  # direction the rocket is facing to start with
 
         self.initial_dist = math.dist(
             self.pos, g.target.pos
@@ -152,7 +154,6 @@ class Rocket:  # the rocket
             self.thrust = limit(self.thrust, 0, 100)  # limit thrust
             self.speed = g.max_speed * (self.thrust / 100)  # set speed
             self.move()  # move the rocket
-            self.eval()
 
     def move(self):
         """Move the rocket"""

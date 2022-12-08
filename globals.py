@@ -42,7 +42,7 @@ height = screen.get_height()  # global height value
 width = screen.get_width()  # global width value
 center = pygame.Vector2(width / 2, height / 2)  # global center value
 frames = 400  # frames to run each generation for
-max_rockets = 10  # rockets per generation
+max_rockets = 25  # rockets per generation
 max_speed = 10  # max rocket speed
 
 net_settings = [8, 4, 2]

@@ -36,7 +36,7 @@ def main():
         )  # perform all calculations, move rockets, handle reproduction
 
         if current_frame % speed == 0:  # determine if program should draw
-            clock.tick(60)  # limits framerate to 60 fps
+            # clock.tick(60)  # limits framerate to 60 fps
             g.screen.fill((0, 0, 0))  # cover screen in black
             pygame.draw.circle(
                 g.screen, (0, 255, 0), g.target.pos, g.target.radius
