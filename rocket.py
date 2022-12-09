@@ -83,12 +83,6 @@ class Rocket:  # the rocket
         self.pos = v2(g.center.x, g.height - 100)  # rocket location
         self.thrust = 0  # a percentage of the rockets max speed
         self.speed = 0  # the rockets speed
-
-        self.sup = 0  # temp counters for the AI instructions
-        self.sdown = 0
-        self.hup = 0
-        self.hdown = 0
-
         self.heading = heading(
             v2(g.rand(-1, 1), g.rand(-1, 1))
         )  # direction the rocket is facing to start with
@@ -190,8 +184,8 @@ class Rocket:  # the rocket
                 or self.pos.x <= 0
                 or self.pos.x >= g.width
             )  # hitting the wall
-            or (self.rect.colliderect(g.obstacle1)) #hitting an obstacle
-            or (self.rect.colliderect(g.obstacle2))
+            # or (self.rect.colliderect(g.obstacle1)) #hitting an obstacle
+            # or (self.rect.colliderect(g.obstacle2))
             or self.hit_target  # hit the target
         ):
             self.stop()  # stop the rocket

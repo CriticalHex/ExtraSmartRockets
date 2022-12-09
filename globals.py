@@ -56,5 +56,5 @@ obstacle1 = pygame.Rect(50, 300, 500, 20)  # obstacles to avoid
 obstacle2 = pygame.Rect(450, 700, 500, 20)
 
 objects: list[pygame.Rect | Circle] = []
-objects.extend([target, obstacle1, obstacle2])
-# objects.extend([target])  # create a list of things to collide with.
+# objects.extend([target, obstacle1, obstacle2])
+objects.extend([target])  # create a list of things to collide with.
