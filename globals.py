@@ -35,8 +35,8 @@ def draw_text(text: str, pos: pygame.Vector2):
 
 
 screen = pygame.display.set_mode(
-    (1000, 1000)
-)  # define the screen to be 1000x1000 pixels
+    (0, 0), pygame.FULLSCREEN
+)  # define the screen to be fullscreen
 pygame.display.set_caption("Smart Rockets")  # caption the screen
 height = screen.get_height()  # global height value
 width = screen.get_width()  # global width value
@@ -56,5 +56,5 @@ obstacle1 = pygame.Rect(50, 300, 500, 20)  # obstacles to avoid
 obstacle2 = pygame.Rect(450, 700, 500, 20)
 
 objects: list[pygame.Rect | Circle] = []
-# objects.extend([target, obstacle1, obstacle2])
-objects.extend([target])  # create a list of things to collide with.
+objects.extend([target, obstacle1, obstacle2])
+# objects.extend([target])  # create a list of things to collide with.

@@ -21,7 +21,7 @@ def trace(start: v2, angle: float, resolution: float):
     hits, and the points in the line, using a provided resolution"""
     line: list[v2] = []  # initialize the list of points in the line traced
     end = vectorize(
-        start, angle, 1000
+        start, angle, g.width
     )  # get the point that would be at the end of the desired ray
     for i in arange(0, 1, resolution):  # percentages at a resolution
         p = point(
@@ -89,11 +89,11 @@ class Rocket:  # the rocket
         self.hup = 0
         self.hdown = 0
 
-        # self.heading = heading(
-        #     v2(g.rand(-1, 1), g.rand(-1, 1))
-        # )  # direction the rocket is facing to start with
+        self.heading = heading(
+            v2(g.rand(-1, 1), g.rand(-1, 1))
+        )  # direction the rocket is facing to start with
 
-        self.heading = heading(v2(0, 0))  # direction the rocket is facing to start with
+        # self.heading = heading(v2(0, 0))  # direction the rocket is facing to start with
 
         self.initial_dist = math.dist(
             self.pos, g.target.pos
@@ -190,8 +190,8 @@ class Rocket:  # the rocket
                 or self.pos.x <= 0
                 or self.pos.x >= g.width
             )  # hitting the wall
-            # or (self.rect.colliderect(g.obstacle1)) #hitting an obstacle
-            # or (self.rect.colliderect(g.obstacle2))
+            or (self.rect.colliderect(g.obstacle1)) #hitting an obstacle
+            or (self.rect.colliderect(g.obstacle2))
             or self.hit_target  # hit the target
         ):
             self.stop()  # stop the rocket
@@ -211,7 +211,7 @@ class Rocket:  # the rocket
 
     def look(self):
         """Calcuate rays and what they're hitting"""
-        res = 0.02  # resolution of the ray
+        res = 0.01  # resolution of the ray
         self.looking1, self.line1 = trace(
             self.pos, self.heading, res
         )  # in front of the rocket
