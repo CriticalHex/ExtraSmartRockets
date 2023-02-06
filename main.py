@@ -1,3 +1,4 @@
+#good commenting kyle.
 import pygame  # game library
 from population import Population  # manages all rockets
 import globals as g  # things that files need access to
